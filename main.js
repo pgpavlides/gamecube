@@ -32,13 +32,18 @@ const fragmentShader = `
 
   void main() {
     vec3 colorA = vec3(1.0, 0.0, 0.0); // red color
-    vec3 colorB = vec3(0.0, 0.0, 1.0); // blue color
+    vec3 colorB = vec3(0.0, 1.0, 0.0); // green color
+    vec3 colorC = vec3(0.0, 0.0, 1.0); // blue color
 
-    // Calculate a blend factor based on the time
-    float blendFactor = 0.5 * (1.0 + sin(u_time));
+    // Calculate blend factors based on the time
+    float blendFactor1 = 0.5 * (1.0 + sin(u_time));
+    float blendFactor2 = 0.5 * (1.0 + sin(u_time + 2.0 * 3.14159 / 3.0)); // offset by 120 degrees
+    float blendFactor3 = 0.5 * (1.0 + sin(u_time + 4.0 * 3.14159 / 3.0)); // offset by 240 degrees
 
-    // Interpolate between the colors using the blend factor
-    vec3 color = mix(colorA, colorB, blendFactor);
+    // Interpolate between the colors using the blend factors
+    vec3 color = mix(colorA, colorB, blendFactor1);
+    color = mix(color, colorC, blendFactor2);
+    color = mix(color, colorA, blendFactor3);
 
     gl_FragColor = vec4(color, 1.0);
   }
