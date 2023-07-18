@@ -53,6 +53,8 @@ const shaderMaterial = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragmentShader,
 });
+//========================================= CUVE GLTF==================
+
 
 loader.load(
   "/cubemain2.glb", // path to your gltf file
@@ -78,10 +80,11 @@ loader.load(
     let tl = gsap.timeline({ repeat: -1, yoyo: true });
 
     // // Animate to x+ then x-
-    tl.to(gltfModel.position, { x: 1, duration: 4, ease: "power1.inOut" }).to(
-      gltfModel.position,
-      { x: -1, duration: 4, ease: "power1.inOut" }
+    tl.to(gltfModel.position, { x: 3, duration: 6, ease: "power1.inOut" }).to(
+      gltfModel.position, { x: -3, duration: 6, ease: "power1.inOut" }
     );
+
+    gsap.to(gltfModel.rotation, { y: "+=" + Math.PI * 2, duration: 16, ease: "none", repeat: -1 });
   },
   // called while loading is progressing
   function (xhr) {
@@ -92,6 +95,26 @@ loader.load(
     console.log("An error happened");
   }
 );
+
+// ============================= FLOOR GLTF =================================================
+loader.load(
+  "/floor.glb", // path to your gltf file
+  function (gltf) {
+    gltfModel = gltf.scene;
+    scene.add(gltf.scene);
+   
+  },
+  // called while loading is progressing
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  function (error) {
+    console.log("An error happened");
+  }
+);
+
+
 
 /**
  * Lights
@@ -195,6 +218,8 @@ scene.add(camera);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI / 2 - 0.1;
+controls.minDistance = 5;
+controls.maxDistance = 15;
 controls.enablePan = false;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 2.0;
@@ -211,47 +236,47 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Raycaster
  */
-let isScaledUp = false;
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+// let isScaledUp = false;
+// const raycaster = new THREE.Raycaster();
+// const mouse = new THREE.Vector2();
 
-function onMouseClick(event) {
-  // calculate mouse position in normalized device coordinates
-  // (-1 to +1) for both components
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// function onMouseClick(event) {
+//   // calculate mouse position in normalized device coordinates
+//   // (-1 to +1) for both components
+//   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
+//   raycaster.setFromCamera(mouse, camera);
 
-  // calculate objects intersecting the picking ray
-  const intersects = raycaster.intersectObjects(scene.children, true);
+//   // calculate objects intersecting the picking ray
+//   const intersects = raycaster.intersectObjects(scene.children, true);
 
-  for (let i = 0; i < intersects.length; i++) {
-    let targetObject = intersects[i].object;
+//   for (let i = 0; i < intersects.length; i++) {
+//     let targetObject = intersects[i].object;
 
-    // Recursive search to find if the gltfModel is a parent of the intersected object
-    while (targetObject !== null) {
-      if (targetObject === gltfModel) {
-        console.log("GLTF model clicked");
+//     // Recursive search to find if the gltfModel is a parent of the intersected object
+//     while (targetObject !== null) {
+//       if (targetObject === gltfModel) {
+//         console.log("GLTF model clicked");
 
-        // Use GSAP to animate the scale of the GLTF model
-        gsap.to(gltfModel.scale, {
-          x: 1.3,
-          y: 1.3,
-          z: 1.3,
-          duration: 1, // Duration of the animation in seconds
-          ease: "power2.out", // Easing function to use
-        });
+//         // Use GSAP to animate the scale of the GLTF model
+//         gsap.to(gltfModel.scale, {
+//           x: 1.3,
+//           y: 1.3,
+//           z: 1.3,
+//           duration: 1, // Duration of the animation in seconds
+//           ease: "power2.out", // Easing function to use
+//         });
 
-        break;
-      }
+//         break;
+//       }
 
-      targetObject = targetObject.parent;
-    }
-  }
-}
+//       targetObject = targetObject.parent;
+//     }
+//   }
+// }
 
-window.addEventListener("click", onMouseClick, false);
+// window.addEventListener("click", onMouseClick, false);
 
 /**
  * Animate
