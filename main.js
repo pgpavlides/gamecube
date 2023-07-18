@@ -80,9 +80,9 @@ loader.load(
     let tl = gsap.timeline({ repeat: -1, yoyo: true });
 
     // // Animate to x+ then x-
-    tl.to(gltfModel.position, { x: 3, duration: 6, ease: "power1.inOut" }).to(
-      gltfModel.position, { x: -3, duration: 6, ease: "power1.inOut" }
-    );
+    // tl.to(gltfModel.position, { x: 3, duration: 6, ease: "power1.inOut" }).to(
+    //   gltfModel.position, { x: -3, duration: 6, ease: "power1.inOut" }
+    // );
 
     gsap.to(gltfModel.rotation, { y: "+=" + Math.PI * 2, duration: 16, ease: "none", repeat: -1 });
   },
@@ -97,22 +97,22 @@ loader.load(
 );
 
 // ============================= FLOOR GLTF =================================================
-loader.load(
-  "/floor.glb", // path to your gltf file
-  function (gltf) {
-    gltfModel = gltf.scene;
-    scene.add(gltf.scene);
+// loader.load(
+//   "/floor.glb", // path to your gltf file
+//   function (gltf) {
+//     gltfModel = gltf.scene;
+//     scene.add(gltf.scene);
    
-  },
-  // called while loading is progressing
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
-  // called when loading has errors
-  function (error) {
-    console.log("An error happened");
-  }
-);
+//   },
+//   // called while loading is progressing
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   },
+//   // called when loading has errors
+//   function (error) {
+//     console.log("An error happened");
+//   }
+// );
 
 
 
@@ -137,45 +137,45 @@ const pointLight = new THREE.PointLight(0x00fffc, 0.3);
 pointLight.position.set(2, 3, 4);
 scene.add(pointLight);
 
-/**
- * Object
- */
-const geometry = new THREE.BufferGeometry();
-const count = 50;
-const positionsArray = new Float32Array(count * 3 * 3);
-for (let i = 0; i < count * 3 * 3; i++) {
-  positionsArray[i] = (Math.random() - 0.5) * 500;
-}
-const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
-geometry.setAttribute("position", positionsAttribute);
+// /**
+//  * Object
+//  */
+// const geometry = new THREE.BufferGeometry();
+// const count = 50;
+// const positionsArray = new Float32Array(count * 3 * 3);
+// for (let i = 0; i < count * 3 * 3; i++) {
+//   positionsArray[i] = (Math.random() - 0.5) * 500;
+// }
+// const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+// geometry.setAttribute("position", positionsAttribute);
 
-const material = new THREE.MeshBasicMaterial({
-  color: 0x1fb8b2,
-  wireframe: true,
-});
+// const material = new THREE.MeshBasicMaterial({
+//   color: 0x1fb8b2,
+//   wireframe: true,
+// });
 
-const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+// const mesh = new THREE.Mesh(geometry, material);
+// scene.add(mesh);
 
-/**
- * New Object
- */
-const geometry2 = new THREE.BufferGeometry();
-const count2 = 35;
-const positionsArray2 = new Float32Array(count2 * 3 * 3);
-for (let i = 0; i < count2 * 3 * 3; i++) {
-  positionsArray2[i] = (Math.random() - 0.5) * 1000;
-}
-const positionsAttribute2 = new THREE.BufferAttribute(positionsArray2, 3);
-geometry2.setAttribute("position", positionsAttribute2);
+// /**
+//  * New Object
+//  */
+// const geometry2 = new THREE.BufferGeometry();
+// const count2 = 35;
+// const positionsArray2 = new Float32Array(count2 * 3 * 3);
+// for (let i = 0; i < count2 * 3 * 3; i++) {
+//   positionsArray2[i] = (Math.random() - 0.5) * 1000;
+// }
+// const positionsAttribute2 = new THREE.BufferAttribute(positionsArray2, 3);
+// geometry2.setAttribute("position", positionsAttribute2);
 
-const material2 = new THREE.MeshBasicMaterial({
-  color: 0xffffff,
-  wireframe: true,
-});
+// const material2 = new THREE.MeshBasicMaterial({
+//   color: 0xffffff,
+//   wireframe: true,
+// });
 
-const mesh2 = new THREE.Mesh(geometry2, material2);
-scene.add(mesh2);
+// const mesh2 = new THREE.Mesh(geometry2, material2);
+// scene.add(mesh2);
 
 /**
  * Sizes
@@ -218,7 +218,7 @@ scene.add(camera);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI / 2 - 0.1;
-controls.minDistance = 5;
+controls.minDistance = 0;
 controls.maxDistance = 15;
 controls.enablePan = false;
 controls.autoRotate = true;
