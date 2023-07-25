@@ -3,16 +3,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { gsap } from "gsap";
-// import {stats} from "stats.js";
 
-// Canvas
 const canvas = document.querySelector("canvas.webgl");
 
-// Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff); 
 
-// GLTF loader
 const loader = new GLTFLoader();
 let gltfModel = null;
 
@@ -40,13 +36,25 @@ const shaderMaterial = new THREE.ShaderMaterial({
   `,
 });
 
-// Shadow
-const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.4 });
-
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
+
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('shadowtexture.png');
+
+const circleGeometry = new THREE.CircleGeometry(1.5, 32);
+const circleMaterial = new THREE.MeshBasicMaterial({ 
+  map: texture, 
+  transparent: true, 
+  opacity: 0.5 
+});
+const shadowCircle = new THREE.Mesh(circleGeometry, circleMaterial);
+
+shadowCircle.rotation.x = -Math.PI / 2;
+shadowCircle.position.y = -1.5; // You might need to adjust this according to your cube's position
+scene.add(shadowCircle);
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
 camera.position.z = 5;
@@ -62,35 +70,19 @@ controls.enablePan = false;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 2.0;
 
-// Renderer
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const clock = new THREE.Clock();
-
-// Shadow plane
-const planeGeometry = new THREE.PlaneGeometry(20, 20);
-const planeMesh = new THREE.Mesh(planeGeometry, shadowMaterial);
-planeMesh.receiveShadow = true;
-planeMesh.rotateX(- Math.PI / 2);
-planeMesh.position.y = -2;
-scene.add(planeMesh);
 
 function loadGLTFModel() {
   loader.load(
     "/cubemain2.glb",
     function (gltf) {
       gltfModel = gltf.scene;
-      gltfModel.traverse(function (child) {
-        if (child.isMesh) {
-          child.castShadow = true;
-        }
-      });
       scene.add(gltf.scene);
 
       const planes = ["Plane1", "Plane2", "Plane3", "Plane4", "Plane5"];
@@ -104,6 +96,8 @@ function loadGLTFModel() {
       });
 
       gsap.to(gltfModel.rotation, { y: "+=" + Math.PI * 2, duration: 16, ease: "none", repeat: -1 });
+
+      // gsap.to(shadowCircle.position, { duration: 0, follow: gltfModel.position });
     },
     function (xhr) {
       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -123,7 +117,6 @@ function addLights() {
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(0, 2, 2);
-  directionalLight.castShadow = true;
   scene.add(directionalLight);
 
   const pointLight = new THREE.PointLight(0xffffff, 0.3);
@@ -134,7 +127,6 @@ function addLights() {
 function animate() {
   const elapsedTime = clock.getElapsedTime();
 
-  // stats.begin();
   uniforms.u_time.value = elapsedTime;
 
   if (gltfModel) {
@@ -143,8 +135,6 @@ function animate() {
 
   controls.update();
   renderer.render(scene, camera);
-
-  // stats.end();
 
   requestAnimationFrame(animate);
 }
@@ -168,22 +158,3 @@ function main() {
 }
 
 main();
-
-// instal npm install stats.js
-
-/* 
-const tick = () => {
-  stats.begin();
-
-  const elapsedTime = clock.getElapsedTime();
-
-  // ... rest of your animation code ...
-
-  stats.end();
-
-  window.requestAnimationFrame(tick);
-};
-
-tick();
-
-*/
