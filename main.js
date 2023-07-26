@@ -109,7 +109,7 @@ function loadGLTFModel() {
 }
 
 function addLights() {
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
 
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x0000ff, 0.3);
